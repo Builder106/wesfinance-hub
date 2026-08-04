@@ -9,6 +9,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
 
 ## Architecture
+
 ```mermaid
 sequenceDiagram
     participant Student
@@ -22,7 +23,9 @@ sequenceDiagram
 ```
 
 ## Setup
+
 (To be written after architecture decision)
 
 ## License
+
 [MIT License](#license)
