@@ -4,7 +4,7 @@ Welcome! This repository serves as the central hub for Wesleyan's Econ & Finance
 
 ## Dev Setup
 
-*(To be added upon tech stack finalization)*
+(To be added upon tech stack finalization)
 
 ## Guardrails
 
