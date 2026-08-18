@@ -1,19 +1,19 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)"  srcset="assets/banner-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.svg">
-  <img alt="WesFinance Hub — Centralized platform for Wesleyan's Econ & Finance community" src="assets/banner-dark.svg">
-</picture>
+# WesFinance Hub
 
-[![CI](https://github.com/yinkavaughan/wesfinance-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/yinkavaughan/wesfinance-hub/actions)
-[![Language](https://img.shields.io/badge/typescript-5%2B-blue.svg)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
+> **Community portal and event network for Economics and Finance at Wesleyan University.**
+
+## 💡 What is WesFinance Hub?
+
+Navigating career recruiting, alumni networking, guest speaker events, and club activities in finance and economics often involves scattered email threads and multiple separate student organizations.
+
+WesFinance Hub centralizes all campus finance activities into a single student portal. Students can discover upcoming finance workshops, connect with alumni mentors on Wall Street and in consulting, access interview prep materials, and stay updated on student investment fund meetings.
 
 ## Architecture
 
 ```mermaid
 sequenceDiagram
     participant Student
-    participant Hub
+    participant Hub as WesFinance Portal
     participant Database
     
     Student->>Hub: Access Hub
