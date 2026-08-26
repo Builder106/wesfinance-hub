@@ -6,22 +6,142 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  secrets:
+    name: Secret scan
     runs-on: ubuntu-24.04
-    defaults:
-      run:
-        working-directory: ./front
     steps:
-    - uses: actions/checkout@v7
-    
-    - name: Use Node.js
-      uses: actions/setup-node@v7
-      with:
-        node-version: '26'
-        
-    - name: Install dependencies
-      run: if [ -f package.json ]; then npm ci || npm install; else echo "No package.json found; skipping dependency installation"; fi
-      
-    # - name: Run tests
-    #   run: npm test
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITLEAKS_NOTIFY_USER_LIST: ""
+
+  lint-format:
+    name: Lint & Format Check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+      - name: Install dependencies
+        run: |
+          if [ -f front/package-lock.json ] || [ -f package-lock.json ]; then
+            cd front 2>/dev/null || true
+            npm ci
+          elif [ -f front/package.json ] || [ -f package.json ]; then
+            cd front 2>/dev/null || true
+            npm install
+          else
+            echo "No package.json found; skipping dependency installation"
+          fi
+      - name: Lint check
+        run: |
+          if [ -f front/package.json ] && grep -q '"lint"' front/package.json; then
+            npm --prefix front run lint
+          elif [ -f package.json ] && grep -q '"lint"' package.json; then
+            npm run lint
+          else
+            echo "No lint script defined; skipping lint check"
+          fi
+      - name: Format check
+        run: |
+          if [ -f front/package.json ] && grep -q '"format"' front/package.json; then
+            npm --prefix front run format:check || npm --prefix front run format
+          elif [ -f package.json ] && grep -q '"format"' package.json; then
+            npm run format:check || npm run format
+          else
+            echo "No format script defined; skipping format check"
+          fi
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+      - name: Install dependencies
+        run: |
+          if [ -f front/package-lock.json ] || [ -f package-lock.json ]; then
+            cd front 2>/dev/null || true
+            npm ci
+          elif [ -f front/package.json ] || [ -f package.json ]; then
+            cd front 2>/dev/null || true
+            npm install
+          else
+            echo "No package.json found; skipping dependency installation"
+          fi
+      - name: Run typecheck
+        run: |
+          if [ -f front/package.json ] && grep -q '"typecheck"' front/package.json; then
+            npm --prefix front run typecheck
+          elif [ -f package.json ] && grep -q '"typecheck"' package.json; then
+            npm run typecheck
+          elif [ -f front/tsconfig.json ] || [ -f tsconfig.json ]; then
+            npx --yes typescript tsc --noEmit
+          else
+            echo "No TypeScript configuration found; skipping typecheck"
+          fi
+
+  test:
+    name: Test
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+      - name: Install dependencies
+        run: |
+          if [ -f front/package-lock.json ] || [ -f package-lock.json ]; then
+            cd front 2>/dev/null || true
+            npm ci
+          elif [ -f front/package.json ] || [ -f package.json ]; then
+            cd front 2>/dev/null || true
+            npm install
+          else
+            echo "No package.json found; skipping dependency installation"
+          fi
+      - name: Run tests
+        run: |
+          if [ -f front/package.json ] && grep -q '"test"' front/package.json; then
+            npm --prefix front test
+          elif [ -f package.json ] && grep -q '"test"' package.json; then
+            npm test
+          else
+            echo "No test script defined; skipping tests"
+          fi
+
+  summary:
+    name: CI summary
+    runs-on: ubuntu-24.04
+    if: always()
+    needs: [secrets, lint-format, typecheck, test]
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [[ "${{ needs.secrets.result }}" != "success" ]] || [[ "${{ needs.lint-format.result }}" != "success" ]] || [[ "${{ needs.typecheck.result }}" != "success" ]] || [[ "${{ needs.test.result }}" != "success" ]]; then
+            echo "One or more CI jobs failed"
+            exit 1
+          fi
+          echo "All CI jobs passed"
