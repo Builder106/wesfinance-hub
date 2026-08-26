@@ -34,8 +34,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-          cache-dependency-path: '**/package-lock.json'
       - name: Install dependencies
         run: |
           if [ -f front/package-lock.json ] || [ -f package-lock.json ]; then
@@ -75,8 +73,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-          cache-dependency-path: '**/package-lock.json'
       - name: Install dependencies
         run: |
           if [ -f front/package-lock.json ] || [ -f package-lock.json ]; then
@@ -109,8 +105,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-          cache-dependency-path: '**/package-lock.json'
       - name: Install dependencies
         run: |
           if [ -f front/package-lock.json ] || [ -f package-lock.json ]; then
