@@ -4,6 +4,10 @@
 > things happen — retrospectives need this raw material to land.
 > Reverse-chronological; one paragraph max per entry.
 
+## 2026-10-13: Removed the README diagram #decision
+
+Removed the README's three-participant, four-message Mermaid block. It only restated that the portal fetches events and network data, so one sentence now carries the same information without an image.
+
 ## 2026-08-30 — Branching and deployment policy #decision #architecture
 
 Adopted a shared `main` production branch and persistent `staging` preview

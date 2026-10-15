@@ -10,17 +10,7 @@ WesFinance Hub centralizes all campus finance activities into a single student p
 
 ## Architecture
 
-```mermaid
-sequenceDiagram
-    participant Student
-    participant Hub as WesFinance Portal
-    participant Database
-    
-    Student->>Hub: Access Hub
-    Hub->>Database: Fetch Events & Network
-    Database-->>Hub: Return Data
-    Hub-->>Student: Display Centralized Portal
-```
+A student opens the WesFinance portal. It fetches events and network information from the database, then displays both in one view.
 
 ## Setup
 
