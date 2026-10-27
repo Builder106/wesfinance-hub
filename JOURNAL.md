@@ -4,6 +4,10 @@
 > things happen — retrospectives need this raw material to land.
 > Reverse-chronological; one paragraph max per entry.
 
+## 2026-10-27: Remove empty CI checks #decision
+
+The repository has no application package or source tree yet, so conditional npm jobs reported green without checking code. Keep the secret scan active and add stack-specific CI when the application is introduced.
+
 ## 2026-10-13: Removed the README diagram #decision
 
 Removed the README's three-participant, four-message Mermaid block. It only restated that the portal fetches events and network data, so one sentence now carries the same information without an image.
